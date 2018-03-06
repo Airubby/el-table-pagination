@@ -105,13 +105,14 @@
 
     </el-table>
 
-    <div v-if="showPagination"
-      style="margin-top: 10px;text-align: right;">
+    <div v-if="showPagination" class="showPagination"
+      style="text-align: right;padding: 10px 0;border: 1px solid #e0e0e0;border-top: none;text-align: right;">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="pagination.pageIndex"
         :page-sizes="pageSizes"
+        :background="background"
         :page-size="pagination.pageSize"
         :layout="paginationLayout"
         :total="total">
@@ -147,6 +148,7 @@
         },
         total: 0,
         loading: false,
+        background: true,
         tableData: [],
         cacheLocalData: []
       }

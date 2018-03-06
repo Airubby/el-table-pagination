@@ -52,5 +52,9 @@
     "vue-template-compiler": "^2.5.9",
     "webpack": "^3.8.1",
     "webpack-node-externals": "^1.6.0"
+  },
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
   }
 }
