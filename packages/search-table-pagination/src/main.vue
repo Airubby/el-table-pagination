@@ -1,6 +1,6 @@
 
 <template>
-  <div>
+  <div style="background:#fff;position:relative">
 
     <search-form
       v-if="formOptions"
@@ -43,7 +43,6 @@
       :show-summary="showSummary"
       :sum-text="sumText"
       :summary-method="summaryMethod"
-      style="width: 100%;margin-top:20px;"
       @select="(selection, row) => emitEventHandler('select', selection, row)"
       @select-all="selection => emitEventHandler('select-all', selection)"
       @selection-change="selection => emitEventHandler('selection-change', selection)"
