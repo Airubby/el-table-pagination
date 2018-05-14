@@ -1,6 +1,6 @@
 
 <template>
-  <div style="background:#fff;position:relative">
+  <div style="background:#fff;position:relative" class="search_form_table">
 
     <search-form
       v-if="formOptions"
@@ -9,6 +9,7 @@
       :size="formOptions.size"
       :fuzzy="formOptions.fuzzy"
       :inline="formOptions.inline"
+      :placeholder="formOptions.placeholder"
       :label-width="formOptions.labelWidth"
       :item-width="formOptions.itemWidth"
       :submit-handler="searchHandler"
@@ -166,8 +167,10 @@
         this.pagination.pageIndex = pageIndex
         this.dataChangeHandler()
       },
-      searchHandler() {
-        this.pagination.pageIndex = 1
+      searchHandler(resetPageIndex = true) {
+        if (resetPageIndex) {
+          this.pagination.pageIndex = 1
+        }
         this.dataChangeHandler(arguments[0])
       },
       dataChangeHandler() {
