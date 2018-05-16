@@ -3,7 +3,7 @@
   <el-form :model="params" :inline="inline" ref="form" @submit.native.prevent="searchHandler()"
     :label-width="labelWidth ? (labelWidth + 'px') : ''">
     <el-form-item v-for="(form, index) in forms" :key="index"
-      :prop="form.itemType != 'daterange' ? form.prop : (datePrefix + index)"
+      :prop="form.itemType != 'datetimerange' ? (form.itemType != 'daterange'? form.prop: (datePrefix + index)) : (dateTimePrefix + index)"
       :label="form.label" :rules="form.rules || []"
       :label-width="form.labelWidth ? (form.labelWidth + 'px') : ''">
       <el-input v-if="form.itemType === 'input' || form.itemType === undefined"
@@ -38,7 +38,17 @@
       <el-date-picker v-else-if="form.itemType === 'daterange'"
         v-model="params[form.modelValue]"
         :size="form.size ? form.size : size"
-        type="daterange" @change="date => changeDate(date, form.prop[0], form.prop[1])"
+        type="daterange" @change="date => changeDate(date, form.prop.split('-')[0], form.prop.split('-')[1])"
+        :disabled="form.disabled"
+        :readonly="form.readonly"
+        :editable="form.editable"
+        :placeholder="form.placeholder"
+        :style="itemStyle + (form.itemWidth ? `width: ${form.itemWidth}px;` : '')"
+        :picker-options="form.pickerOptions || {}" />
+    <el-date-picker v-else-if="form.itemType === 'datetimerange'"
+        v-model="params[form.modelValue]"
+        :size="form.size ? form.size : size"
+        type="datetimerange" @change="datetime => changeTimeDate(datetime, form.prop.split('-')[0], form.prop.split('-')[1])"
         :disabled="form.disabled"
         :readonly="form.readonly"
         :editable="form.editable"
@@ -73,6 +83,7 @@
     data() {
       const { forms, fuzzy } = this.$props
       const datePrefix = 'daterange-prefix'
+      const dateTimePrefix = 'datetimerange-prefix'
       const selectOptionPrefix = 'select-option-prefix'
       let dataObj = {
         selectOptions: {}
@@ -106,6 +117,10 @@
           params[datePrefix + i] = ''
           v.modelValue = datePrefix + i
         }
+        if (v.itemType === 'datetimerange') {
+          params[dateTimePrefix + i] = ''
+          v.modelValue = dateTimePrefix + i
+        }
         if (v.itemType === 'select' && (v.selectFetch || v.selectUrl)) {
           const dataKey = selectOptionPrefix + i
           dataObj.selectOptions[dataKey] = []
@@ -128,6 +143,7 @@
       return {
         params,
         datePrefix,
+        dateTimePrefix,
         selectOptionPrefix,
         ...dataObj,
         format,
@@ -165,10 +181,10 @@
       getParams(callback) {
         this.$refs['form'].validate(valid => {
           if (valid) {
-            const { params, datePrefix, format } = this
+            const { params, datePrefix,dateTimePrefix, format } = this
             let formattedForm = {}
             Object.keys(params).forEach(v => {
-              if (v.indexOf(datePrefix) === -1) {
+              if (v.indexOf(datePrefix) === -1&&v.indexOf(dateTimePrefix) === -1) {
                 formattedForm[v] = format[v] ? format[v](params[v], v) : params[v]
               }
             })
@@ -182,6 +198,8 @@
         this.$refs['form'].resetFields()
       },
       changeDate(date, startDate, endDate) {
+        console.log(startDate)
+        console.log(endDate)
         let dates
         if (date === null) {
           this.params[startDate] = ''
@@ -193,9 +211,34 @@
         } else if (date && date.hasOwnProperty('length')) {
           const firstDate = date[0]
           const secondDate = date[1]
+          console.log(firstDate)
+          console.log(secondDate)
           dates = [
             `${firstDate.getFullYear()}-${('0' + (firstDate.getMonth() + 1)).substr(-2)}-${('0' + firstDate.getDate()).substr(-2)}`,
             `${secondDate.getFullYear()}-${('0' + (secondDate.getMonth() + 1)).substr(-2)}-${('0' + secondDate.getDate()).substr(-2)}`
+          ]
+        }
+
+        this.params[startDate] = dates[0]
+        this.params[endDate] = dates[1]
+      },
+      changeTimeDate(datetime, startDate, endDate) {
+        let dates
+        if (datetime === null) {
+          this.params[startDate] = ''
+          this.params[endDate] = ''
+          return
+        }
+        if (typeof datetime === 'string') {
+          dates = datetime.split(' - ')
+        } else if (datetime && datetime.hasOwnProperty('length')) {
+          const firstDate = datetime[0]
+          const secondDate = datetime[1]
+          console.log(firstDate)
+          console.log(secondDate)
+          dates = [
+            `${firstDate.getFullYear()}-${('0' + (firstDate.getMonth() + 1)).substr(-2)}-${('0' + firstDate.getDate()).substr(-2)} ${('0' + firstDate.getHours()).substr(-2)}:${('0' + firstDate.getMinutes()).substr(-2)}:${('0' + firstDate.getSeconds()).substr(-2)}`,
+            `${secondDate.getFullYear()}-${('0' + (secondDate.getMonth() + 1)).substr(-2)}-${('0' + secondDate.getDate()).substr(-2)} ${('0' + secondDate.getHours()).substr(-2)}:${('0' + secondDate.getMinutes()).substr(-2)}:${('0' + secondDate.getSeconds()).substr(-2)}`
           ]
         }
 
