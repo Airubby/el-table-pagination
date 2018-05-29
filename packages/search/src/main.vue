@@ -98,7 +98,7 @@
         if (propType === 'string') {
           v.modelValue = v.prop
           params[v.prop] = ''
-
+          
           fuzzyOps[v.prop] = v.fuzzy ? v.fuzzy : fuzzy
           if (v.format) {
             format[v.prop] = v.format
@@ -138,6 +138,7 @@
             resultHandler: v.selectResultHandler
           })
         }
+       
       })
 
       return {
@@ -147,7 +148,7 @@
         selectOptionPrefix,
         ...dataObj,
         format,
-        fuzzyOps
+        fuzzyOps,
       }
     },
     computed: {
@@ -269,6 +270,35 @@
           }
         })
       }
+    },
+    watch:{
+        params:{
+          handler:function(val,oldval){
+              this.forms.forEach((v, i) => {
+                for(var item in this.params){
+                   if(v.prop==item){
+                     v.propValue=this.params[item];
+                     continue;
+                   }
+                }
+              })
+          },
+          deep: true
+        },
+        forms:{
+          handler:function(val,oldval){
+              this.forms.forEach((v, i) => {
+                for(var item in this.params){
+                   if(v.prop==item){
+                     this.params[item]=v.propValue;
+                     continue;
+                   }
+                }
+              })
+          },
+          deep: true
+        }
     }
+    
   }
 </script>
