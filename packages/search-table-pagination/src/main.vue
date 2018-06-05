@@ -93,6 +93,8 @@
             {{ Vue.filter(column['filter'])(scope.row[column.prop]) }}
           </span>
           <span v-else-if="column.slotName">
+            {{column}}
+            {{scope.row}}
             <slot :name="column.slotName" :row="scope.row" :$index="scope.$index" />
           </span>
           <span v-else>
@@ -326,9 +328,9 @@
           return false
         }
         const cacheData = JSON.parse(JSON.stringify(data))
-        this.tableData = this.dataFilter(cacheData)
-        this.cacheLocalData = cacheData
-        this.total = cacheData.length
+        this.tableData = this.dataFilter(data)
+        this.cacheLocalData = data
+        this.total = data.length
       }
     },
     mounted() {
