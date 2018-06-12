@@ -9,6 +9,7 @@
       :size="formOptions.size"
       :fuzzy="formOptions.fuzzy"
       :inline="formOptions.inline"
+      :initParams="formOptions.initParams"
       :placeholder="formOptions.placeholder"
       :label-width="formOptions.labelWidth"
       :item-width="formOptions.itemWidth"
@@ -93,8 +94,6 @@
             {{ Vue.filter(column['filter'])(scope.row[column.prop]) }}
           </span>
           <span v-else-if="column.slotName">
-            {{column}}
-            {{scope.row}}
             <slot :name="column.slotName" :row="scope.row" :$index="scope.$index" />
           </span>
           <span v-else>

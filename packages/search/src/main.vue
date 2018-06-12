@@ -81,7 +81,7 @@
     name: 'ElSearchForm',
     props: formProps,
     data() {
-      const { forms, fuzzy } = this.$props
+      const { forms, fuzzy ,initParams } = this.$props
       const datePrefix = 'daterange-prefix'
       const dateTimePrefix = 'datetimerange-prefix'
       const selectOptionPrefix = 'select-option-prefix'
@@ -152,6 +152,7 @@
       }
     },
     computed: {
+     
       itemStyle() {
         const { itemWidth } = this
         if (itemWidth) {
@@ -159,6 +160,7 @@
         }
         return ''
       }
+       
     },
     methods: {
       isArray(value) {
@@ -199,8 +201,6 @@
         this.$refs['form'].resetFields()
       },
       changeDate(date, startDate, endDate) {
-        console.log(startDate)
-        console.log(endDate)
         let dates
         if (date === null) {
           this.params[startDate] = ''
@@ -212,8 +212,6 @@
         } else if (date && date.hasOwnProperty('length')) {
           const firstDate = date[0]
           const secondDate = date[1]
-          console.log(firstDate)
-          console.log(secondDate)
           dates = [
             `${firstDate.getFullYear()}-${('0' + (firstDate.getMonth() + 1)).substr(-2)}-${('0' + firstDate.getDate()).substr(-2)}`,
             `${secondDate.getFullYear()}-${('0' + (secondDate.getMonth() + 1)).substr(-2)}-${('0' + secondDate.getDate()).substr(-2)}`
@@ -235,8 +233,6 @@
         } else if (datetime && datetime.hasOwnProperty('length')) {
           const firstDate = datetime[0]
           const secondDate = datetime[1]
-          console.log(firstDate)
-          console.log(secondDate)
           dates = [
             `${firstDate.getFullYear()}-${('0' + (firstDate.getMonth() + 1)).substr(-2)}-${('0' + firstDate.getDate()).substr(-2)} ${('0' + firstDate.getHours()).substr(-2)}:${('0' + firstDate.getMinutes()).substr(-2)}:${('0' + firstDate.getSeconds()).substr(-2)}`,
             `${secondDate.getFullYear()}-${('0' + (secondDate.getMonth() + 1)).substr(-2)}-${('0' + secondDate.getDate()).substr(-2)} ${('0' + secondDate.getHours()).substr(-2)}:${('0' + secondDate.getMinutes()).substr(-2)}:${('0' + secondDate.getSeconds()).substr(-2)}`
@@ -272,32 +268,55 @@
       }
     },
     watch:{
-        params:{
+        // params:{
+        //   handler:function(val,oldval){
+        //       this.forms.forEach((v, i) => {
+        //         for(var item in this.params){
+        //            if(v.prop==item){
+        //              v.propValue=this.params[item];
+        //              continue;
+        //            }
+        //         }
+        //       })
+        //   },
+        //   deep: true
+        // },
+        // forms:{
+        //   handler:function(val,oldval){
+        //       this.forms.forEach((v, i) => {
+        //         for(var item in this.params){
+        //            if(v.prop==item){
+        //              this.params[item]=v.propValue;
+        //              continue;
+        //            }
+        //         }
+        //       })
+        //       this.searchHandler();
+        //   },
+        //   deep: true
+        // },
+        initParams:{
           handler:function(val,oldval){
-              this.forms.forEach((v, i) => {
-                for(var item in this.params){
-                   if(v.prop==item){
-                     v.propValue=this.params[item];
-                     continue;
-                   }
-                }
-              })
+              this.searchHandler();
           },
           deep: true
         },
-        forms:{
+        params:{
           handler:function(val,oldval){
-              this.forms.forEach((v, i) => {
-                for(var item in this.params){
-                   if(v.prop==item){
-                     this.params[item]=v.propValue;
-                     continue;
-                   }
-                }
-              })
+              var allNull=true;
+              for(var item in this.params){
+                  if(this.params[item]!=''&&this.params[item]!=null){
+                    allNull=false;
+                    break;
+                  }
+              }
+              if(allNull){
+                  this.searchHandler();
+              }
           },
           deep: true
-        }
+        },
+
     }
     
   }

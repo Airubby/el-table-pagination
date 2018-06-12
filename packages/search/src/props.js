@@ -32,6 +32,12 @@ export const formProps = {
     type: String,
     default: '重置'
   },
+  initParams:{
+    type: Object,
+    default: () => {
+      return {}
+    }
+  },
   forms: {
     type: Array,
     required: true
