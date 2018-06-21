@@ -61,7 +61,7 @@
         type="primary"
         :size="size"
         @click="searchHandler"
-        :loading="submitLoading">
+        :loading="submitLoading" v-if="forms.length>0">
         {{ submitBtnText }}
       </el-button>
       <el-button type="primary" :plain="true"
@@ -268,41 +268,16 @@
       }
     },
     watch:{
-        // params:{
-        //   handler:function(val,oldval){
-        //       this.forms.forEach((v, i) => {
-        //         for(var item in this.params){
-        //            if(v.prop==item){
-        //              v.propValue=this.params[item];
-        //              continue;
-        //            }
-        //         }
-        //       })
-        //   },
-        //   deep: true
-        // },
-        // forms:{
-        //   handler:function(val,oldval){
-        //       this.forms.forEach((v, i) => {
-        //         for(var item in this.params){
-        //            if(v.prop==item){
-        //              this.params[item]=v.propValue;
-        //              continue;
-        //            }
-        //         }
-        //       })
-        //       this.searchHandler();
-        //   },
-        //   deep: true
-        // },
-        initParams:{
-          handler:function(val,oldval){
-              this.searchHandler();
-          },
-          deep: true
-        },
         params:{
           handler:function(val,oldval){
+              this.forms.forEach((v, i) => {
+                for(var item in this.params){
+                   if(v.prop==item){
+                     v.propValue=this.params[item];
+                     continue;
+                   }
+                }
+              })
               var allNull=true;
               for(var item in this.params){
                   if(this.params[item]!=''&&this.params[item]!=null){
@@ -316,6 +291,42 @@
           },
           deep: true
         },
+        forms:{
+          handler:function(val,oldval){
+              this.forms.forEach((v, i) => {
+                for(var item in this.params){
+                   if(v.prop==item){
+                     this.params[item]=v.propValue;
+                     continue;
+                   }
+                }
+              })
+          },
+          deep: true
+        },
+        //上面两个只针对一个下拉框根据另一个下拉框的条件筛选用的
+        initParams:{
+          handler:function(val,oldval){
+              this.searchHandler();
+          },
+          deep: true
+        },
+        //下面这个用上面的了，因为有下拉框筛选条件的问题
+        // params:{
+        //   handler:function(val,oldval){
+        //       var allNull=true;
+        //       for(var item in this.params){
+        //           if(this.params[item]!=''&&this.params[item]!=null){
+        //             allNull=false;
+        //             break;
+        //           }
+        //       }
+        //       if(allNull){
+        //           this.searchHandler();
+        //       }
+        //   },
+        //   deep: true
+        // },
 
     }
     
