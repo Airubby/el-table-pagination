@@ -151,7 +151,8 @@
         loading: false,
         background: true,
         tableData: [],
-        cacheLocalData: []
+        cacheLocalData: [],
+        resultInfo:{},
       }
     },
     computed: {
@@ -272,7 +273,7 @@
 
         requestObject.then(response => {
           let result = response
-
+          this.resultInfo=response
           if (response && !(response instanceof Array)) {
             if (listField && listField.indexOf('.') !== -1) {
               listField.split('.').forEach(vv => {
@@ -353,7 +354,11 @@
     watch: {
       data: function(value) {
         this.loadLocalData(value)
+      },
+      resultInfo:function(value){
+        this.$emit('resultData',value); 
       }
     }
+
   }
 </script>

@@ -16,18 +16,8 @@ const install = function(Vue, opts = {}) {
   });
   if (!opts.axios) {
     opts.axios = require('axios')
-    opts.ElementUI=require('element-ui')
     opts.axios.interceptors.response.use(
       response => {
-        if(response.data.code=="-1"){
-            opts.ElementUI.Message.warning("请重新登录系统访问！");
-        }
-        if(response.data.code=="-2"){
-            opts.ElementUI.Message.warning(response.data.msg);
-        }
-        if(response.data.code=="-9"){
-            opts.ElementUI.Message.warning(response.data.msg);
-        }
         return JSON.parse(JSON.stringify(response.data))
       },
       error => {

@@ -36,7 +36,8 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
-    "element-ui": "^2.3.6"
+    "element-ui": "^2.3.6",
+    "vue-router": "^3.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
