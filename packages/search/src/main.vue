@@ -56,7 +56,7 @@
         :style="itemStyle + (form.itemWidth ? `width: ${form.itemWidth}px;` : '')"
         :picker-options="form.pickerOptions || {}" />
     </el-form-item>
-    <el-form-item label="">
+    <el-form-item label="" v-if="forms.length>0">
       <el-button
         type="primary"
         :size="size"
