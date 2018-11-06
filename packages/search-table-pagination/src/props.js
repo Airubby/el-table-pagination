@@ -151,6 +151,14 @@ let props = {
     type: Boolean,
     default: true
   },
+  showIndex: {
+    type: Boolean,
+    default: false
+  },
+  showIndexTitle: {
+    type: String,
+    default: "序号"
+  },
   pageSizes: {
     type: Array,
     default: () => {

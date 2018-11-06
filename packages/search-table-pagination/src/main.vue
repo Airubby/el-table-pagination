@@ -63,7 +63,7 @@
       @expand-change="(row, expanded) => emitEventHandler('expand-change', row, expanded)" >
 
       <slot name="prepend" />
-
+      <el-table-column type="index" :index="indexMethod" :label="showIndexTitle" width="55px" v-if="showIndex"></el-table-column>
       <el-table-column
         v-for="(column, columnIndex) in columns" :key="columnIndex"
         :column-key="column.columnKey"
@@ -161,6 +161,9 @@
       }
     },
     methods: {
+      indexMethod(index){
+        return (this.pagination.pageIndex-1)*this.pagination.pageSize+index+1;
+      },
       handleSizeChange(size) {
         this.pagination.pageSize = size
         this.dataChangeHandler()
