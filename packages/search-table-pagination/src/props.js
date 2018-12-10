@@ -85,6 +85,12 @@ let props = {
   data: {
     type: Array
   },
+  webSocketInfo: {
+    type: Array,
+    default: () => {
+      return []
+    }
+  },
   dataHandler: {
     type: Function
   },

@@ -298,7 +298,7 @@
           } else {
             this.tableData = result
           }
-
+          
           let totalValue = response
           if (Object.prototype.toString.call(response) === '[object Array]') {
             totalValue = response.length
@@ -360,7 +360,10 @@
       },
       resultInfo:function(value){
         this.$emit('resultData',value); 
-      }
+      },
+      webSocketInfo:function(value){
+        this.tableData=this.webSocketInfo;
+      },
     }
 
   }
