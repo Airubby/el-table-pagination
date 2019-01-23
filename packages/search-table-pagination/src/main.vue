@@ -231,6 +231,7 @@
           this.total = cacheLocalData.length
           this.tableData = this.dataFilter(cacheLocalData)
         }
+        this.$emit('resultData',this.tableData); 
       },
       fetchHandler(formParams = {}) {
         this.loading = true
