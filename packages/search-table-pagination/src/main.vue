@@ -22,7 +22,17 @@
     <slot name="form" :loading="loading" :search="searchHandler" />
 
     <slot />
-
+    <el-alert
+        v-if="showSelectAll&&allSelection.length>0"
+        title=""
+        :closable="false"
+        type="info">
+        <div class="" style="font-size:14px;">
+            <i class="el-icon-warning"></i>
+            <span style="margin:0 5px;">已选择<em style="margin:0 5px;">{{allSelection.length}}</em>项</span>
+            <a @click="clearSelect">清空</a>
+        </div>
+    </el-alert>
     <el-table v-loading.lock="loading"
       ref="table"
       :data="tableData"
@@ -153,6 +163,9 @@
         tableData: [],
         cacheLocalData: [],
         resultInfo:{},
+        multipleSelection:true,
+        allSelection:[],
+        currentSelection:[],
       }
     },
     computed: {
@@ -324,6 +337,26 @@
       },
       emitEventHandler(event) {
         this.$emit(event, ...Array.from(arguments).slice(1))
+        if(this.showSelectAll&&arguments[0]=='selection-change'){
+          console.log(arguments)
+          if(this.multipleSelection){
+            let val=arguments[1]
+            let currentArr = [];
+            if(val.length>this.currentSelection.length){ //增加
+              this.allSelection=this.allSelection.concat(this.checkItem(val,this.currentSelection))
+            }else{//减少
+              currentArr=this.checkItem(this.currentSelection,val);
+              let list=[];
+              if(this.allSelection.length>currentArr.length){
+                this.allSelection=this.checkItem(this.allSelection,currentArr);
+              }else{
+                this.allSelection=this.checkItem(currentArr,this.allSelection);
+              }
+            }
+            this.currentSelection = JSON.parse(JSON.stringify(val));
+          }
+          this.multipleSelection=true;
+        }
       },
       loadLocalData(data) {
         if (!data) {
@@ -335,7 +368,30 @@
         this.tableData = this.dataFilter(data)
         this.cacheLocalData = data
         this.total = data.length
-      }
+      },
+      clearSelect(){
+        this.$refs.table.clearSelection();
+        this.allSelection=[];
+			  this.currentSelection=[];
+      },
+      checkItem(arr1,arr2){
+        let arr=[];
+        for(let i=0;i<arr1.length;i++){
+          let id=arr1[i].id;
+          let isExit=false;
+          for(let j=0;j<arr2.length;j++){
+            let cid=arr2[j].id;
+            if(id==cid){
+              isExit=true;
+              break;
+            }
+          }
+          if(!isExit){
+            arr.push(arr1[i]);
+          }
+        }
+        return arr;
+      },
     },
     mounted() {
       // event: expand changed to `expand-change` in Element v2.x
@@ -361,6 +417,20 @@
       },
       resultInfo:function(value){
         this.$emit('resultData',value); 
+        if(this.showSelectAll){
+          this.currentSelection=[];
+          this.$nextTick(function(){
+            for(let i=0;i<this.tableData.length;i++){
+              for(let j=0;j<this.allSelection.length;j++){
+                if(this.tableData[i].id==this.allSelection[j].id){
+                  this.multipleSelection=false;
+                  this.$refs.table.toggleRowSelection(this.tableData[i],true); 
+                  this.currentSelection.push(this.tableData[i]);
+                }
+              }
+            }
+          })
+        }
       },
       webSocketInfo:function(value){
         this.tableData=this.webSocketInfo;

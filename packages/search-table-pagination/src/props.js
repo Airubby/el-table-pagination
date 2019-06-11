@@ -157,6 +157,10 @@ let props = {
     type: Boolean,
     default: true
   },
+  showSelectAll: {
+    type:Boolean,
+    default:false
+  },
   showIndex: {
     type: Boolean,
     default: false
