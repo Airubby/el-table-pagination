@@ -22,17 +22,6 @@
     <slot name="form" :loading="loading" :search="searchHandler" />
 
     <slot />
-    <el-alert
-        v-if="showSelectAll&&allSelection.length>0"
-        title=""
-        :closable="false"
-        type="info">
-        <div class="" style="font-size:14px;">
-            <i class="el-icon-warning"></i>
-            <span style="margin:0 5px;">已选择<em style="margin:0 5px;">{{allSelection.length}}</em>项</span>
-            <a @click="clearSelect">清空</a>
-        </div>
-    </el-alert>
     <el-table v-loading.lock="loading"
       ref="table"
       :data="tableData"
@@ -116,18 +105,30 @@
 
     </el-table>
 
-    <div v-if="showPagination" class="showPagination"
-      style="text-align: right;padding: 10px 0;border: 1px solid #e0e0e0;border-top: none;text-align: right;">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="pagination.pageIndex"
-        :page-sizes="pageSizes"
-        :background="background"
-        :page-size="pagination.pageSize"
-        :layout="paginationLayout"
-        :total="total">
-      </el-pagination>
+    <div v-if="showPagination" class="showPagination" :style="computeStyle"
+      style="text-align:right;padding:15px 0;">
+      <div style="width:100%;height:100%;position:relative">
+        <div class="showSelect" style="font-size:14px;position:absolute;left:10px;top:0;height:32px;line-height:32px;color:#606266;" v-if="showSelectAll&&allSelection.length>0">
+            <i class="el-icon-warning"></i>
+            <span style="margin:0 15px 0 5px;">已选择<em style="margin:0 2px;color:#409EFF;">{{allSelection.length}}</em>项</span>
+            <a @click="clearSelect" style="cursor:pointer;color:#409EFF;">清空</a>
+        </div>
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pagination.pageIndex"
+          :page-sizes="pageSizes"
+          :background="background"
+          :page-size="pagination.pageSize"
+          :layout="paginationLayout"
+          :total="total">
+          <div class="info">
+            <i class="el-icon-warning"></i>
+            <span style="margin:0 5px;">已选择<em style="margin:0 5px;">{{allSelection.length}}</em>项</span>
+            <a @click="clearSelect">清空</a>
+          </div>
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -171,6 +172,9 @@
     computed: {
       newSlotScope() {
         return Number(Vue.version.replace(/\./g, '')) >= 250
+      },
+      computeStyle(){
+        return this.border?'border:1px solid #EBEEF5;border-top:none;':'';
       }
     },
     methods: {
@@ -186,6 +190,7 @@
         this.dataChangeHandler()
       },
       searchHandler(resetPageIndex = true) {
+        this.clearSelect();
         if (resetPageIndex) {
           this.pagination.pageIndex = 1
         }
