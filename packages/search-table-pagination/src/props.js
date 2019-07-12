@@ -7,6 +7,10 @@ let props = {
   maxHeight: [String, Number],
   stripe: Boolean,
   border: Boolean,
+  size:{
+    type:String,
+    default:"medium"
+  },
   fit: {
     type: Boolean,
     default: true

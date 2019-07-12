@@ -29,6 +29,7 @@
       :stripe="stripe"
       :height="height"
       :max-height="maxHeight"
+      :size="size"
       :fit="fit"
       :show-header="showHeader"
       :highlight-current-row="highlightCurrentRow"

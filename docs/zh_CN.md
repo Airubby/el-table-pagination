@@ -9,6 +9,7 @@
 | data | 数据集合，仅在 type='local' 时有效 | array | - | - |
 | url | 后端数据接口 | string | - | - |
 | method| 接口请求方式 | string | get, post, delete, put | get |
+| params| 接口时初始化的参数 | object | get, post, delete, put | get |
 | auto-load | 是否默认加载数据 | boolean | true, false | true |
 | headers | 请求头信息 | object | - | - |
 | list-field | 接口返回值对应数据的字段值 | string | - | data.list |
@@ -18,6 +19,7 @@
 | data-handler | 数组数据的 map 处理函数 | function | - | - |
 | columns | table column配置对象的数组。具体配置见下面[**Table column 属性**](#table-column-属性) | array | - | - |
 | show-pagination | 是否显示分页组件，如设为false，查询时不传分页参数 | boolean | true, false | true |
+| show-select-all | 是否显示勾选项的总数及清除勾选项功能，如设为true，显示所选项数 | boolean | true, false | false |
 | page-sizes | 每页显示个数的控件选项 | array | - | [20, 50, 100] |
 | pagination-layout | 分页控件的结构，每个类型用逗号分隔 | string | sizes, prev, pager, next, jumper, ->, total, slot | total, prev, pager, next, jumper, sizes |
 | page-index-key | 参数：页码数 的 key 值 | string | - | pageIndex |
