@@ -380,6 +380,9 @@
         this.allSelection=[];
 			  this.currentSelection=[];
       },
+      setSelect(arr){
+        this.allSelection=arr;
+      },
       checkItem(arr1,arr2){
         let arr=[];
         for(let i=0;i<arr1.length;i++){
