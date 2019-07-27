@@ -223,16 +223,20 @@
           const validData = cacheLocalData.filter(v => {
             let valids = []
             validParamKeys.forEach(vv => {
-              if (typeof v[vv] === 'number') {
-                valids.push(
-                  paramFuzzy && paramFuzzy[vv] ? (String(v[vv]).indexOf(String(mergeParams[vv])) !== -1)
-                    : (String(v[vv]) === String(mergeParams[vv]))
-                )
-              } else {
-                valids.push(
-                  paramFuzzy && paramFuzzy[vv] ? (v[vv].indexOf(mergeParams[vv]) !== -1) : (v[vv] === mergeParams[vv])
-                )
+              if(v[vv]){
+                if (typeof v[vv] === 'number') {
+                  valids.push(
+                    paramFuzzy && paramFuzzy[vv] ? (String(v[vv]).indexOf(String(mergeParams[vv])) !== -1)
+                    : (mergeParams[vv]?(String(v[vv]).indexOf(String(mergeParams[vv])) !== -1):(String(v[vv]) === String(mergeParams[vv])))
+                  )
+                } else {
+                  valids.push(
+                    paramFuzzy && paramFuzzy[vv] ? (v[vv].indexOf(mergeParams[vv]) !== -1) 
+                    : (mergeParams[vv]? (v[vv].indexOf(mergeParams[vv]) !== -1)  : (v[vv] === mergeParams[vv]))
+                  )
+                }
               }
+              
             })
             return valids.every(vvv => {
               return vvv
@@ -424,20 +428,18 @@
       },
       resultInfo:function(value){
         this.$emit('resultData',value); 
-        if(this.showSelectAll){
-          this.currentSelection=[];
-          this.$nextTick(function(){
-            for(let i=0;i<this.tableData.length;i++){
-              for(let j=0;j<this.allSelection.length;j++){
-                if(this.tableData[i].id==this.allSelection[j].id){
-                  this.multipleSelection=false;
-                  this.$refs.table.toggleRowSelection(this.tableData[i],true); 
-                  this.currentSelection.push(this.tableData[i]);
-                }
+        this.currentSelection=[];
+        this.$nextTick(function(){
+          for(let i=0;i<this.tableData.length;i++){
+            for(let j=0;j<this.allSelection.length;j++){
+              if(this.tableData[i].id==this.allSelection[j].id){
+                this.multipleSelection=false;
+                this.$refs.table.toggleRowSelection(this.tableData[i],true); 
+                this.currentSelection.push(this.tableData[i]);
               }
             }
-          })
-        }
+          }
+        })
       },
       webSocketInfo:function(value){
         this.tableData=this.webSocketInfo;
