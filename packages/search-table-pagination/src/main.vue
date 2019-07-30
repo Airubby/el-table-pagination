@@ -123,11 +123,6 @@
           :page-size="pagination.pageSize"
           :layout="paginationLayout"
           :total="total">
-          <div class="info">
-            <i class="el-icon-warning"></i>
-            <span style="margin:0 5px;">已选择<em style="margin:0 5px;">{{allSelection.length}}</em>项</span>
-            <a @click="clearSelect">清空</a>
-          </div>
         </el-pagination>
       </div>
     </div>
@@ -382,6 +377,9 @@
       },
       setSelect(arr){
         this.allSelection=arr;
+      },
+      setRowSelection(row,selected){
+        this.$refs.table.toggleRowSelection(row,selected);
       },
       checkItem(arr1,arr2){
         let arr=[];
