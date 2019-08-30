@@ -87,7 +87,10 @@ let props = {
     }
   },
   data: {
-    type: Array
+    type: Array,
+    default:()=>{
+      return []
+    }
   },
   webSocketInfo: {
     type: Array,
@@ -164,6 +167,10 @@ let props = {
   showSelectAll: {
     type:Boolean,
     default:false
+  },
+  selectId:{  //显示勾选时的id，默认不给就为id
+      type:String,
+      default:'id'
   },
   showIndex: {
     type: Boolean,

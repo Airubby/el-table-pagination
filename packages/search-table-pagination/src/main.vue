@@ -160,7 +160,7 @@
         tableData: [],
         cacheLocalData: [],
         resultInfo:{},
-        multipleSelection:true,
+        multipleSelection:true,  //默认是计算勾选的，当切换分页时为false，不计算勾选，只是勾选选项时计算
         allSelection:[],
         currentSelection:[],
       }
@@ -249,7 +249,12 @@
           this.total = cacheLocalData.length
           this.tableData = this.dataFilter(cacheLocalData)
         }
+
         this.$emit('resultData',this.tableData); 
+        this.multipleSelection=false;
+        this.$nextTick(function(){
+          this.changePage()
+        })
       },
       fetchHandler(formParams = {}) {
         this.loading = true
@@ -332,7 +337,7 @@
           } else {
             totalValue = 0
           }
-          this.total = totalValue
+          this.total = Number(totalValue)
 
           this.loading = false
         }).catch(error => {
@@ -343,7 +348,6 @@
       emitEventHandler(event) {
         this.$emit(event, ...Array.from(arguments).slice(1))
         if(this.showSelectAll&&arguments[0]=='selection-change'){
-          console.log(arguments)
           if(this.multipleSelection){
             let val=arguments[1]
             let currentArr = [];
@@ -388,10 +392,10 @@
       checkItem(arr1,arr2){
         let arr=[];
         for(let i=0;i<arr1.length;i++){
-          let id=arr1[i].id;
+          let id=arr1[i][this.selectId];
           let isExit=false;
           for(let j=0;j<arr2.length;j++){
-            let cid=arr2[j].id;
+            let cid=arr2[j][this.selectId];
             if(id==cid){
               isExit=true;
               break;
@@ -402,6 +406,19 @@
           }
         }
         return arr;
+      },
+      changePage(){  //改变当前页后，操作勾选项问题
+        this.currentSelection=[];
+        for(let i=0;i<this.tableData.length;i++){
+          for(let j=0;j<this.allSelection.length;j++){
+            if(this.tableData[i][this.selectId]==this.allSelection[j][this.selectId]){
+              this.multipleSelection=false;
+              this.$refs.table.toggleRowSelection(this.tableData[i],true); 
+              this.currentSelection.push(this.tableData[i]);
+            }
+          }
+        }
+        this.multipleSelection=true;  //local需要用
       },
     },
     mounted() {
@@ -428,17 +445,8 @@
       },
       resultInfo:function(value){
         this.$emit('resultData',value); 
-        this.currentSelection=[];
         this.$nextTick(function(){
-          for(let i=0;i<this.tableData.length;i++){
-            for(let j=0;j<this.allSelection.length;j++){
-              if(this.tableData[i].id==this.allSelection[j].id){
-                this.multipleSelection=false;
-                this.$refs.table.toggleRowSelection(this.tableData[i],true); 
-                this.currentSelection.push(this.tableData[i]);
-              }
-            }
-          }
+          this.changePage()
         })
       },
       webSocketInfo:function(value){

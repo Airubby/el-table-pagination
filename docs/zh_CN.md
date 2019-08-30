@@ -20,6 +20,7 @@
 | columns | table column配置对象的数组。具体配置见下面[**Table column 属性**](#table-column-属性) | array | - | - |
 | show-pagination | 是否显示分页组件，如设为false，查询时不传分页参数 | boolean | true, false | true |
 | show-select-all | 是否显示勾选项的总数及清除勾选项功能，如设为true，显示所选项数 | boolean | true, false | false |
+| select-id | 显示勾选项的总数及清除勾选项功能时计算数量的判断id | string | id | id |
 | page-sizes | 每页显示个数的控件选项 | array | - | [20, 50, 100] |
 | pagination-layout | 分页控件的结构，每个类型用逗号分隔 | string | sizes, prev, pager, next, jumper, ->, total, slot | total, prev, pager, next, jumper, sizes |
 | page-index-key | 参数：页码数 的 key 值 | string | - | pageIndex |
