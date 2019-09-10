@@ -31,12 +31,12 @@
   },
   "homepage": "https://github.com/Airubby/el-table-pagination#readme",
   "peerDependencies": {
-    "element-ui": "^2.3.6",
+    "element-ui": "^2.8.2",
     "vue": "^2.5.2"
   },
   "dependencies": {
-    "axios": "^0.16.2",
-    "element-ui": "^2.3.6",
+    "axios": "^0.19",
+    "element-ui": "^2.8.2",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {

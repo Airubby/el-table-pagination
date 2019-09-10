@@ -299,52 +299,52 @@
         }
 
         requestObject.then(response => {
-          let result = response
-          this.resultInfo=response
-          if (response && !(response instanceof Array)) {
-            if (listField && listField.indexOf('.') !== -1) {
-              listField.split('.').forEach(vv => {
-                result = result[vv]
-              })
-            } else {
-              result = response[listField]
+            let result = response
+            this.resultInfo=response
+            if (response && !(response instanceof Array)) {
+                if (listField && listField.indexOf('.') !== -1) {
+                    listField.split('.').forEach(vv => {
+                        result = result[vv]
+                    })
+                } else {
+                    result = response[listField]
+                }
             }
-          }
+            if(!result){
+                result=[];
+            }else if(!(result instanceof Array)){
+                throw new Error(`The result of key:${listField} is not Array.`)
+                this.loading = false
+                return false
+            }
+            if (this.dataHandler) {
+                this.tableData = result.map(this.dataHandler)
+            } else {
+                this.tableData = result
+            }
+            
+            let totalValue = response
+            if (Object.prototype.toString.call(response) === '[object Array]') {
+                totalValue = response.length
+            } else if (typeof response === 'object') {
+                if (totalField && totalField.indexOf('.') !== -1) {
+                    totalField.split('.').forEach(vv => {
+                        totalValue = totalValue[vv]
+                    })
+                } else {
+                    totalValue = response[totalField]
+                }
+            } else {
+                totalValue = 0
+            }
+            this.total = Number(totalValue)
 
-          if (!result || !(result instanceof Array)) {
-            throw new Error(`The result of key:${listField} is not Array.`)
             this.loading = false
-            return false
-          }
-
-          if (this.dataHandler) {
-            this.tableData = result.map(this.dataHandler)
-          } else {
-            this.tableData = result
-          }
-          
-          let totalValue = response
-          if (Object.prototype.toString.call(response) === '[object Array]') {
-            totalValue = response.length
-          } else if (typeof response === 'object') {
-            if (totalField && totalField.indexOf('.') !== -1) {
-              totalField.split('.').forEach(vv => {
-                totalValue = totalValue[vv]
-              })
-            } else {
-              totalValue = response[totalField]
-            }
-          } else {
-            totalValue = 0
-          }
-          this.total = Number(totalValue)
-
-          this.loading = false
-        }).catch(error => {
-          // console.error('Get remote data failed. ', error)
-          this.loading = false
-        })
-      },
+            }).catch(error => {
+                // console.error('Get remote data failed. ', error)
+                this.loading = false
+            })
+        },
       emitEventHandler(event) {
         this.$emit(event, ...Array.from(arguments).slice(1))
         if(this.showSelectAll&&arguments[0]=='selection-change'){
