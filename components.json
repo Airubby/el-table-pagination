@@ -1,4 +1,4 @@
 {
-  "search": "./packages/search/index.js",
-  "search-table-pagination": "./packages/search-table-pagination/index.js"
+  "ElTablePagination": "./packages/el-table-pagination/index.js",
+  "ElTableForm": "./packages/el-table-form/index.js"
 }

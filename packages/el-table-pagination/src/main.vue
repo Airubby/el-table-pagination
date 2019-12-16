@@ -131,15 +131,15 @@
 
 <script>
   import Vue from 'vue'
-  import props from './props'
-  import searchForm from '../../search/src/main.vue'
+  import {Props} from './props'
+  import ElTableForm from '../../el-table-form/src/main.vue'
 
   export default {
-    name: 'ElSearchTablePagination',
+    name: 'ElTablePagination',
     components: {
-      searchForm
+      ElTableForm
     },
-    props,
+    props:Props,
     data() {
       const _this = this
       return {

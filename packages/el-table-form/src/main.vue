@@ -75,11 +75,11 @@
 </template>
 
 <script>
-  import { formProps } from './props'
+  import { Props } from './props'
 
   export default {
-    name: 'ElSearchForm',
-    props: formProps,
+    name: 'ElTableForm',
+    props: Props,
     data() {
       const { forms, fuzzy ,initParams } = this.$props
       const datePrefix = 'daterange-prefix'
@@ -146,7 +146,7 @@
         datePrefix,
         dateTimePrefix,
         selectOptionPrefix,
-        ...dataObj,
+        dataObj:dataObj,
         format,
         fuzzyOps,
       }

@@ -4,7 +4,7 @@
 
 > You can use this package to show local and remote list data in table with search form and pagination.
 
-![Screen shot](./screenshot/el-search-table-pagination.png)
+![Screen shot](./screenshot/el-table-pagination.png)
 
 [See the code of the **Screen shot**](#quick-start)
 
@@ -28,13 +28,13 @@ Import modules and set up settings in `main.js`:
 
 ```js
 import Vue from 'vue'
-import ElSearchTablePagination from 'el-table-pagination'
+import ElTablePagination from 'el-table-pagination'
 
 // Default use axios as HTTP tool
-Vue.use(ElSearchTablePagination)
+Vue.use(ElTablePagination)
 // or set a custom HTTP tool
 import axios from 'axios'
-Vue.use(ElSearchTablePagination, {
+Vue.use(ElTablePagination, {
     axios
 })
 ```
@@ -43,11 +43,11 @@ Vue.use(ElSearchTablePagination, {
 
 ```vue
 <template>
-  <el-search-table-pagination
+  <el-table-pagination
     url="example.xxx.com/list"
     :columns="columns"
     :formOptions="formOptions">
-  </el-search-table-pagination>
+  </el-table-pagination>
 </template>
 
 <script>
@@ -92,13 +92,13 @@ And the Test page is the image above.
 
 ```vue
 <template>
-  <el-search-table-pagination
+  <el-table-pagination
     type="local"
     :data="tableData"
     :page-sizes="[5, 10]"
     :columns="columns"
     :form-options="formOptions">
-  </el-search-table-pagination>
+  </el-table-pagination>
 </template>
 
 <script>
