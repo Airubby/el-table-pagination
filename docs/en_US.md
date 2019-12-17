@@ -18,6 +18,8 @@
 | data-handler | Function as parameter of Array.map to hander list data | function | - | - |
 | columns | Array of table column settings object. See [**Table column Attributes**](#table-column-attribute) below | array | - | - |
 | show-pagination | Whether to show pagination component, if it's false, request parameters will not contain pagination parameters(pageIndex, pageSize) | boolean | - | true |
+| show-select-all | Whether to display the total number of tick boxes and clear tick boxes | boolean | true, false | false |
+| select-id | Displays the total number of tick boxes and the judgment id for calculating the number of tick boxes | string | id | id |
 | page-sizes | Options of item count per page | array | - | [20, 50, 100] |
 | pagination-layout | Layout of pagination, elements  separated with a comma | string | sizes, prev, pager, next, jumper, ->, total, slot | total, prev, pager, next, jumper, sizes |
 | page-index-key | The key of pagination parameter of page index | string | - | pageIndex |
@@ -91,7 +93,10 @@ submitHandler | function to hander click event of submit button, the will receiv
 
 | Method Name | Description | Parameters |
 | ----- |-----|-----|
-| searchHandler | Reset page index to 1, and research | - |
+| searchHandler | Reset page index to 1, and research | ture/false |
+| setSelect | Set the table initialization to check the item object to give an id | array[object] |
+| setRowSelection | Set the selected state of a row of table (row, true/false) | row, selected |
+| clearSelect | Clear the table check | - |
 
 ## Slots
 
