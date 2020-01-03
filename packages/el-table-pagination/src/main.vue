@@ -339,6 +339,11 @@
             }
             this.total = Number(totalValue)
 
+            //当前页不为第一页（为第三页每页20条）切换到每页100条的时候第三页没有数据返回为空的这种情况下；
+            if(this.total>0&&this.tableData.length==0){
+              this.handleCurrentChange(1);
+            }
+
             this.loading = false
             }).catch(error => {
                 // console.error('Get remote data failed. ', error)
