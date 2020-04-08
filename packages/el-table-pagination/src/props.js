@@ -29,6 +29,7 @@ export const Props = {
     showSummary: Boolean,
     sumText: String,
     summaryMethod: Function,
+    spanMethod:Function,
     // custom attributes
     fetch: {
       type: Function

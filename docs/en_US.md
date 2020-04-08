@@ -20,6 +20,7 @@
 | show-pagination | Whether to show pagination component, if it's false, request parameters will not contain pagination parameters(pageIndex, pageSize) | boolean | - | true |
 | show-select-all | Whether to display the total number of tick boxes and clear tick boxes | boolean | true, false | false |
 | select-id | Displays the total number of tick boxes and the judgment id for calculating the number of tick boxes | string | id | id |
+| span-method | method that returns rowspan and colspan | Function({ row, column, rowIndex, columnIndex })	 | - | - |
 | page-sizes | Options of item count per page | array | - | [20, 50, 100] |
 | pagination-layout | Layout of pagination, elements  separated with a comma | string | sizes, prev, pager, next, jumper, ->, total, slot | total, prev, pager, next, jumper, sizes |
 | page-index-key | The key of pagination parameter of page index | string | - | pageIndex |
