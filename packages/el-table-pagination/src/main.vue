@@ -146,13 +146,13 @@
       return {
         Vue,
         pagination: {
-          pageIndex: 1,
+          pageIndex: _this.pageIndex,
           pageSize: (() => {
             const { pageSizes } = _this
             if (pageSizes.length > 0) {
-              return pageSizes[0]
+              return _this.pageSize||pageSizes[0]
             }
-            return 20
+            return _this.pageSize
           })()
         },
         total: 0,

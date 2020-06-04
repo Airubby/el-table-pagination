@@ -142,5 +142,13 @@ export const Props = {
     pageSizeKey: {
       type: String,
       default: 'pageSize'
+    },
+    pageIndex:{
+      type: Number,
+      default: 1
+    },
+    pageSize:{
+      type: Number,
+      default:10
     }
 }
