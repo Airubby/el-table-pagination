@@ -97,6 +97,7 @@ submitHandler | 查询按钮的click处理函数，接收form表单对象数据�
 | ----- |-----|-----|
 | searchHandler | true重置分页页码参数为1，重新搜索数据 | ture/false |
 | setSelect | 设置table初始化需要勾选的项object给个id即可 | array[object] |
+| getSelect | 获取table勾选的项 | array[object] |
 | setRowSelection | 设置table某一行的选中状态(row, true/false) | row, selected |
 | clearSelect | 清空table的勾选项 |  |
 

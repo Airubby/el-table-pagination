@@ -96,6 +96,7 @@ submitHandler | function to hander click event of submit button, the will receiv
 | ----- |-----|-----|
 | searchHandler | Reset page index to 1, and research | ture/false |
 | setSelect | Set the table initialization to check the item object to give an id | array[object] |
+| getSelect | Get the items checked on the table | array[object] |
 | setRowSelection | Set the selected state of a row of table (row, true/false) | row, selected |
 | clearSelect | Clear the table check | - |
 

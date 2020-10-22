@@ -142,29 +142,29 @@
     },
     props:Props,
     data() {
-      const _this = this
-      return {
-        Vue,
-        pagination: {
-          pageIndex: _this.pageIndex,
-          pageSize: (() => {
-            const { pageSizes } = _this
-            if (pageSizes.length > 0) {
-              return _this.pageSize||pageSizes[0]
-            }
-            return _this.pageSize
-          })()
-        },
-        total: 0,
-        loading: false,
-        background: true,
-        tableData: [],
-        cacheLocalData: [],
-        resultInfo:{},
-        multipleSelection:true,  //默认是计算勾选的，当切换分页时为false，不计算勾选，只是勾选选项时计算
-        allSelection:[],
-        currentSelection:[],
-      }
+        const _this = this
+        return {
+            Vue,
+            pagination: {
+            pageIndex: _this.pageIndex,
+            pageSize: (() => {
+                const { pageSizes } = _this
+                if (pageSizes.length > 0) {
+                return _this.pageSize||pageSizes[0]
+                }
+                return _this.pageSize
+            })()
+            },
+            total: 0,
+            loading: false,
+            background: true,
+            tableData: [],
+            cacheLocalData: [],
+            resultInfo:{},
+            multipleSelection:true,  //默认是计算勾选的，当切换分页时为false，不计算勾选，只是勾选选项时计算
+            allSelection:[],
+            currentSelection:[],
+        }
     },
     computed: {
       newSlotScope() {
@@ -175,257 +175,260 @@
       }
     },
     methods: {
-      indexMethod(index){
-        return (this.pagination.pageIndex-1)*this.pagination.pageSize+index+1;
-      },
-      handleSizeChange(size) {
-        this.pagination.pageSize = size
-        this.dataChangeHandler()
-      },
-      handleCurrentChange(pageIndex) {
-        this.pagination.pageIndex = pageIndex
-        this.dataChangeHandler()
-      },
-      searchHandler(resetPageIndex = true) {
-        this.clearSelect();
-        if (resetPageIndex) {
-          this.pagination.pageIndex = 1
-        }
-        this.dataChangeHandler(arguments[0])
-      },
-      dataChangeHandler() {
-        const { type } = this
-        if (type === 'local') {
-          this.dataFilterHandler(arguments[0])
-        } else if (type === 'remote') {
-          this.fetchHandler(arguments[0])
-        }
-      },
-      dataFilter(data) {
-        const { pageIndex, pageSize } = this.pagination
-        return data.filter((v, i) => {
-          return i >= (pageIndex - 1) * pageSize && i < pageIndex * pageSize
-        })
-      },
-      dataFilterHandler(formParams) {
-        const { cacheLocalData, params, pagination } = this
-        const { pageIndex, pageSize } = pagination
-        const mergeParams = Object.assign(params, formParams)
-        const validParamKeys = Object.keys(mergeParams).filter(v => {
-          return mergeParams[v] !== undefined && mergeParams[v] !== ''
-        })
-        const searchForm = this.$refs['searchForm']
-        let paramFuzzy
-        if (searchForm) {
-          paramFuzzy = searchForm.getParamFuzzy()
-        }
-
-        if (validParamKeys.length > 0) {
-          const validData = cacheLocalData.filter(v => {
-            let valids = []
-            validParamKeys.forEach(vv => {
-              if(v[vv]){
-                if (typeof v[vv] === 'number') {
-                  valids.push(
-                    paramFuzzy && paramFuzzy[vv] ? (String(v[vv]).indexOf(String(mergeParams[vv])) !== -1)
-                    : (mergeParams[vv]?(String(v[vv]).indexOf(String(mergeParams[vv])) !== -1):(String(v[vv]) === String(mergeParams[vv])))
-                  )
-                } else {
-                  valids.push(
-                    paramFuzzy && paramFuzzy[vv] ? (v[vv].indexOf(mergeParams[vv]) !== -1) 
-                    : (mergeParams[vv]? (v[vv].indexOf(mergeParams[vv]) !== -1)  : (v[vv] === mergeParams[vv]))
-                  )
-                }
-              }
-              
-            })
-            return valids.every(vvv => {
-              return vvv
-            })
-          })
-
-          this.tableData = this.dataFilter(validData)
-          this.total = validData.length
-        } else {
-          this.total = cacheLocalData.length
-          this.tableData = this.dataFilter(cacheLocalData)
-        }
-
-        this.$emit('resultData',this.tableData); 
-        this.multipleSelection=false;
-        this.$nextTick(function(){
-          this.changePage()
-        })
-      },
-      fetchHandler(formParams = {}) {
-        this.loading = true
-        let { fetch, method, url, $axios, headers,
-              listField, pageIndexKey, pageSizeKey,
-              totalField, params, showPagination,
-              pagination } = this
-
-        params = JSON.parse(JSON.stringify(Object.assign(params, formParams)))
-
-        if (showPagination) {
-          params = Object.assign(params, {
-            [pageIndexKey]: pagination.pageIndex,
-            [pageSizeKey]: pagination.pageSize
-          })
-        }
-
-        let requestObject = null
-
-        if (fetch) {
-          requestObject = fetch(params)
-        } else {
-          $axios.interceptors.request.use(
-            config => {
-              Object.keys(headers).forEach(v => {
-                config.headers[v] = headers[v]
-              })
-              return config;
-            },
-            error => {
-              return Promise.reject(error);
+        indexMethod(index){
+            return (this.pagination.pageIndex-1)*this.pagination.pageSize+index+1;
+        },
+        handleSizeChange(size) {
+            this.pagination.pageSize = size
+            this.dataChangeHandler()
+        },
+        handleCurrentChange(pageIndex) {
+            this.pagination.pageIndex = pageIndex
+            this.dataChangeHandler()
+        },
+        searchHandler(resetPageIndex = true) {
+            this.clearSelect();
+            if (resetPageIndex) {
+            this.pagination.pageIndex = 1
             }
-          )
-
-          method = method.toLowerCase();
-
-          if (method === 'get') {
-            requestObject = $axios[method](url, { params })
-          } else {
-            requestObject = $axios[method](url, params)
-          }
-        }
-
-        requestObject.then(response => {
-            let result = response
-            this.resultInfo=response
-            if (response && !(response instanceof Array)) {
-                if (listField && listField.indexOf('.') !== -1) {
-                    listField.split('.').forEach(vv => {
-                        result = result[vv]
-                    })
-                } else {
-                    result = response[listField]
-                }
+            this.dataChangeHandler(arguments[0])
+        },
+        dataChangeHandler() {
+            const { type } = this
+            if (type === 'local') {
+            this.dataFilterHandler(arguments[0])
+            } else if (type === 'remote') {
+            this.fetchHandler(arguments[0])
             }
-            if(!result){
-                result=[];
-            }else if(!(result instanceof Array)){
-                throw new Error(`The result of key:${listField} is not Array.`)
-                this.loading = false
-                return false
-            }
-            if (this.dataHandler) {
-                this.tableData = result.map(this.dataHandler)
-            } else {
-                this.tableData = result
-            }
-            
-            let totalValue = response
-            if (Object.prototype.toString.call(response) === '[object Array]') {
-                totalValue = response.length
-            } else if (typeof response === 'object') {
-                if (totalField && totalField.indexOf('.') !== -1) {
-                    totalField.split('.').forEach(vv => {
-                        totalValue = totalValue[vv]
-                    })
-                } else {
-                    totalValue = response[totalField]
-                }
-            } else {
-                totalValue = 0
-            }
-            this.total = Number(totalValue)
-
-            //当前页不为第一页（为第三页每页20条）切换到每页100条的时候第三页没有数据返回为空的这种情况下；
-            if(this.total>0&&this.tableData.length==0){
-              this.handleCurrentChange(1);
-            }
-
-            this.loading = false
-            }).catch(error => {
-                // console.error('Get remote data failed. ', error)
-                this.loading = false
+        },
+        dataFilter(data) {
+            const { pageIndex, pageSize } = this.pagination
+            return data.filter((v, i) => {
+            return i >= (pageIndex - 1) * pageSize && i < pageIndex * pageSize
             })
         },
-      emitEventHandler(event) {
-        this.$emit(event, ...Array.from(arguments).slice(1))
-        if(this.showSelectAll&&arguments[0]=='selection-change'){
-          if(this.multipleSelection){
-            let val=arguments[1]
-            let currentArr = [];
-            if(val.length>this.currentSelection.length){ //增加
-              this.allSelection=this.allSelection.concat(this.checkItem(val,this.currentSelection))
-            }else{//减少
-              currentArr=this.checkItem(this.currentSelection,val);
-              let list=[];
-              if(this.allSelection.length>currentArr.length){
-                this.allSelection=this.checkItem(this.allSelection,currentArr);
-              }else{
-                this.allSelection=this.checkItem(currentArr,this.allSelection);
-              }
+        dataFilterHandler(formParams) {
+            const { cacheLocalData, params, pagination } = this
+            const { pageIndex, pageSize } = pagination
+            const mergeParams = Object.assign(params, formParams)
+            const validParamKeys = Object.keys(mergeParams).filter(v => {
+            return mergeParams[v] !== undefined && mergeParams[v] !== ''
+            })
+            const searchForm = this.$refs['searchForm']
+            let paramFuzzy
+            if (searchForm) {
+            paramFuzzy = searchForm.getParamFuzzy()
             }
-            this.currentSelection = JSON.parse(JSON.stringify(val));
-          }
-          this.multipleSelection=true;
-        }
-      },
-      loadLocalData(data) {
-        if (!data) {
-          throw new Error(`When the type is 'local', you must set attribute 'data' and 'data' must be a array.`)
-          this.showPagination = false
-          return false
-        }
-        const cacheData = JSON.parse(JSON.stringify(data))
-        this.tableData = this.dataFilter(data)
-        this.cacheLocalData = data
-        this.total = data.length
-      },
-      clearSelect(){
-        this.$refs.table.clearSelection();
-        this.allSelection=[];
-			  this.currentSelection=[];
-      },
-      setSelect(arr){
-        this.allSelection=arr;
-      },
-      setRowSelection(row,selected){
-        this.$refs.table.toggleRowSelection(row,selected);
-      },
-      checkItem(arr1,arr2){
-        let arr=[];
-        for(let i=0;i<arr1.length;i++){
-          let id=arr1[i][this.selectId];
-          let isExit=false;
-          for(let j=0;j<arr2.length;j++){
-            let cid=arr2[j][this.selectId];
-            if(id==cid){
-              isExit=true;
-              break;
+
+            if (validParamKeys.length > 0) {
+            const validData = cacheLocalData.filter(v => {
+                let valids = []
+                validParamKeys.forEach(vv => {
+                if(v[vv]){
+                    if (typeof v[vv] === 'number') {
+                    valids.push(
+                        paramFuzzy && paramFuzzy[vv] ? (String(v[vv]).indexOf(String(mergeParams[vv])) !== -1)
+                        : (mergeParams[vv]?(String(v[vv]).indexOf(String(mergeParams[vv])) !== -1):(String(v[vv]) === String(mergeParams[vv])))
+                    )
+                    } else {
+                    valids.push(
+                        paramFuzzy && paramFuzzy[vv] ? (v[vv].indexOf(mergeParams[vv]) !== -1) 
+                        : (mergeParams[vv]? (v[vv].indexOf(mergeParams[vv]) !== -1)  : (v[vv] === mergeParams[vv]))
+                    )
+                    }
+                }
+                
+                })
+                return valids.every(vvv => {
+                return vvv
+                })
+            })
+
+            this.tableData = this.dataFilter(validData)
+            this.total = validData.length
+            } else {
+            this.total = cacheLocalData.length
+            this.tableData = this.dataFilter(cacheLocalData)
             }
-          }
-          if(!isExit){
-            arr.push(arr1[i]);
-          }
-        }
-        return arr;
-      },
-      changePage(){  //改变当前页后，操作勾选项问题
-        this.currentSelection=[];
-        for(let i=0;i<this.tableData.length;i++){
-          for(let j=0;j<this.allSelection.length;j++){
-            if(this.tableData[i][this.selectId]==this.allSelection[j][this.selectId]){
-              this.multipleSelection=false;
-              this.$refs.table.toggleRowSelection(this.tableData[i],true); 
-              this.currentSelection.push(this.tableData[i]);
+
+            this.$emit('resultData',this.tableData); 
+            this.multipleSelection=false;
+            this.$nextTick(function(){
+            this.changePage()
+            })
+        },
+        fetchHandler(formParams = {}) {
+            this.loading = true
+            let { fetch, method, url, $axios, headers,
+                listField, pageIndexKey, pageSizeKey,
+                totalField, params, showPagination,
+                pagination } = this
+
+            params = JSON.parse(JSON.stringify(Object.assign(params, formParams)))
+
+            if (showPagination) {
+            params = Object.assign(params, {
+                [pageIndexKey]: pagination.pageIndex,
+                [pageSizeKey]: pagination.pageSize
+            })
             }
-          }
-        }
-        this.multipleSelection=true;  //local需要用
-      },
+
+            let requestObject = null
+
+            if (fetch) {
+            requestObject = fetch(params)
+            } else {
+            $axios.interceptors.request.use(
+                config => {
+                Object.keys(headers).forEach(v => {
+                    config.headers[v] = headers[v]
+                })
+                return config;
+                },
+                error => {
+                return Promise.reject(error);
+                }
+            )
+
+            method = method.toLowerCase();
+
+            if (method === 'get') {
+                requestObject = $axios[method](url, { params })
+            } else {
+                requestObject = $axios[method](url, params)
+            }
+            }
+
+            requestObject.then(response => {
+                let result = response
+                this.resultInfo=response
+                if (response && !(response instanceof Array)) {
+                    if (listField && listField.indexOf('.') !== -1) {
+                        listField.split('.').forEach(vv => {
+                            result = result[vv]
+                        })
+                    } else {
+                        result = response[listField]
+                    }
+                }
+                if(!result){
+                    result=[];
+                }else if(!(result instanceof Array)){
+                    throw new Error(`The result of key:${listField} is not Array.`)
+                    this.loading = false
+                    return false
+                }
+                if (this.dataHandler) {
+                    this.tableData = result.map(this.dataHandler)
+                } else {
+                    this.tableData = result
+                }
+                
+                let totalValue = response
+                if (Object.prototype.toString.call(response) === '[object Array]') {
+                    totalValue = response.length
+                } else if (typeof response === 'object') {
+                    if (totalField && totalField.indexOf('.') !== -1) {
+                        totalField.split('.').forEach(vv => {
+                            totalValue = totalValue[vv]
+                        })
+                    } else {
+                        totalValue = response[totalField]
+                    }
+                } else {
+                    totalValue = 0
+                }
+                this.total = Number(totalValue)
+
+                //当前页不为第一页（为第三页每页20条）切换到每页100条的时候第三页没有数据返回为空的这种情况下；
+                if(this.total>0&&this.tableData.length==0){
+                this.handleCurrentChange(1);
+                }
+
+                this.loading = false
+                }).catch(error => {
+                    // console.error('Get remote data failed. ', error)
+                    this.loading = false
+                })
+            },
+        emitEventHandler(event) {
+            this.$emit(event, ...Array.from(arguments).slice(1))
+            if(arguments[0]=='selection-change'){
+                if(this.multipleSelection){
+                    let val=arguments[1]
+                    let currentArr = [];
+                    if(val.length>this.currentSelection.length){ //增加
+                        this.allSelection=this.allSelection.concat(this.checkItem(val,this.currentSelection))
+                    }else{//减少
+                        currentArr=this.checkItem(this.currentSelection,val);
+                        let list=[];
+                        if(this.allSelection.length>currentArr.length){
+                            this.allSelection=this.checkItem(this.allSelection,currentArr);
+                        }else{
+                            this.allSelection=this.checkItem(currentArr,this.allSelection);
+                        }
+                    }
+                    this.currentSelection = JSON.parse(JSON.stringify(val));
+                }
+                this.multipleSelection=true;
+            }
+        },
+        loadLocalData(data) {
+            if (!data) {
+            throw new Error(`When the type is 'local', you must set attribute 'data' and 'data' must be a array.`)
+            this.showPagination = false
+            return false
+            }
+            const cacheData = JSON.parse(JSON.stringify(data))
+            this.tableData = this.dataFilter(data)
+            this.cacheLocalData = data
+            this.total = data.length
+        },
+        clearSelect(){
+            this.$refs.table.clearSelection();
+            this.allSelection=[];
+            this.currentSelection=[];
+        },
+        setSelect(arr){
+            this.allSelection=arr;
+        },
+        getSelect(){
+            return this.allSelection;
+        },
+        setRowSelection(row,selected){
+            this.$refs.table.toggleRowSelection(row,selected);
+        },
+        checkItem(arr1,arr2){
+            let arr=[];
+            for(let i=0;i<arr1.length;i++){
+            let id=arr1[i][this.selectId];
+            let isExit=false;
+            for(let j=0;j<arr2.length;j++){
+                let cid=arr2[j][this.selectId];
+                if(id==cid){
+                isExit=true;
+                break;
+                }
+            }
+            if(!isExit){
+                arr.push(arr1[i]);
+            }
+            }
+            return arr;
+        },
+        changePage(){  //改变当前页后，操作勾选项问题
+            this.currentSelection=[];
+            for(let i=0;i<this.tableData.length;i++){
+            for(let j=0;j<this.allSelection.length;j++){
+                if(this.tableData[i][this.selectId]==this.allSelection[j][this.selectId]){
+                this.multipleSelection=false;
+                this.$refs.table.toggleRowSelection(this.tableData[i],true); 
+                this.currentSelection.push(this.tableData[i]);
+                }
+            }
+            }
+            this.multipleSelection=true;  //local需要用
+        },
     },
     mounted() {
       // event: expand changed to `expand-change` in Element v2.x
