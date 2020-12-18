@@ -1,6 +1,6 @@
 
 <template>
-  <div style="background:#fff;position:relative" class="search_form_table">
+  <div style="position:relative" class="search_form_table">
 
     <search-form
       v-if="formOptions"
@@ -196,9 +196,9 @@
         dataChangeHandler() {
             const { type } = this
             if (type === 'local') {
-            this.dataFilterHandler(arguments[0])
+                this.dataFilterHandler(arguments[0])
             } else if (type === 'remote') {
-            this.fetchHandler(arguments[0])
+                this.fetchHandler(arguments[0])
             }
         },
         dataFilter(data) {
@@ -221,40 +221,40 @@
             }
 
             if (validParamKeys.length > 0) {
-            const validData = cacheLocalData.filter(v => {
-                let valids = []
-                validParamKeys.forEach(vv => {
-                if(v[vv]){
-                    if (typeof v[vv] === 'number') {
-                    valids.push(
-                        paramFuzzy && paramFuzzy[vv] ? (String(v[vv]).indexOf(String(mergeParams[vv])) !== -1)
-                        : (mergeParams[vv]?(String(v[vv]).indexOf(String(mergeParams[vv])) !== -1):(String(v[vv]) === String(mergeParams[vv])))
-                    )
-                    } else {
-                    valids.push(
-                        paramFuzzy && paramFuzzy[vv] ? (v[vv].indexOf(mergeParams[vv]) !== -1) 
-                        : (mergeParams[vv]? (v[vv].indexOf(mergeParams[vv]) !== -1)  : (v[vv] === mergeParams[vv]))
-                    )
+                const validData = cacheLocalData.filter(v => {
+                    let valids = []
+                    validParamKeys.forEach(vv => {
+                    if(v[vv]){
+                        if (typeof v[vv] === 'number') {
+                        valids.push(
+                            paramFuzzy && paramFuzzy[vv] ? (String(v[vv]).indexOf(String(mergeParams[vv])) !== -1)
+                            : (mergeParams[vv]?(String(v[vv]).indexOf(String(mergeParams[vv])) !== -1):(String(v[vv]) === String(mergeParams[vv])))
+                        )
+                        } else {
+                        valids.push(
+                            paramFuzzy && paramFuzzy[vv] ? (v[vv].indexOf(mergeParams[vv]) !== -1) 
+                            : (mergeParams[vv]? (v[vv].indexOf(mergeParams[vv]) !== -1)  : (v[vv] === mergeParams[vv]))
+                        )
+                        }
                     }
-                }
-                
+                    
+                    })
+                    return valids.every(vvv => {
+                    return vvv
+                    })
                 })
-                return valids.every(vvv => {
-                return vvv
-                })
-            })
 
-            this.tableData = this.dataFilter(validData)
-            this.total = validData.length
+                this.tableData = this.dataFilter(validData)
+                this.total = validData.length
             } else {
-            this.total = cacheLocalData.length
-            this.tableData = this.dataFilter(cacheLocalData)
+                this.total = cacheLocalData.length
+                this.tableData = this.dataFilter(cacheLocalData)
             }
 
             this.$emit('resultData',this.tableData); 
             this.multipleSelection=false;
             this.$nextTick(function(){
-            this.changePage()
+                this.changePage()
             })
         },
         fetchHandler(formParams = {}) {
@@ -267,36 +267,36 @@
             params = JSON.parse(JSON.stringify(Object.assign(params, formParams)))
 
             if (showPagination) {
-            params = Object.assign(params, {
-                [pageIndexKey]: pagination.pageIndex,
-                [pageSizeKey]: pagination.pageSize
-            })
+                params = Object.assign(params, {
+                    [pageIndexKey]: pagination.pageIndex,
+                    [pageSizeKey]: pagination.pageSize
+                })
             }
 
             let requestObject = null
 
             if (fetch) {
-            requestObject = fetch(params)
+                requestObject = fetch(params)
             } else {
-            $axios.interceptors.request.use(
-                config => {
-                Object.keys(headers).forEach(v => {
-                    config.headers[v] = headers[v]
-                })
-                return config;
-                },
-                error => {
-                return Promise.reject(error);
+                $axios.interceptors.request.use(
+                    config => {
+                    Object.keys(headers).forEach(v => {
+                        config.headers[v] = headers[v]
+                    })
+                    return config;
+                    },
+                    error => {
+                    return Promise.reject(error);
+                    }
+                )
+
+                method = method.toLowerCase();
+
+                if (method === 'get') {
+                    requestObject = $axios[method](url, { params })
+                } else {
+                    requestObject = $axios[method](url, params)
                 }
-            )
-
-            method = method.toLowerCase();
-
-            if (method === 'get') {
-                requestObject = $axios[method](url, { params })
-            } else {
-                requestObject = $axios[method](url, params)
-            }
             }
 
             requestObject.then(response => {
@@ -342,7 +342,7 @@
 
                 //当前页不为第一页（为第三页每页20条）切换到每页100条的时候第三页没有数据返回为空的这种情况下；
                 if(this.total>0&&this.tableData.length==0){
-                this.handleCurrentChange(1);
+                    this.handleCurrentChange(1);
                 }
 
                 this.loading = false
@@ -375,9 +375,9 @@
         },
         loadLocalData(data) {
             if (!data) {
-            throw new Error(`When the type is 'local', you must set attribute 'data' and 'data' must be a array.`)
-            this.showPagination = false
-            return false
+                throw new Error(`When the type is 'local', you must set attribute 'data' and 'data' must be a array.`)
+                this.showPagination = false
+                return false
             }
             const cacheData = JSON.parse(JSON.stringify(data))
             this.tableData = this.dataFilter(data)
@@ -390,7 +390,11 @@
             this.currentSelection=[];
         },
         setSelect(arr){
+            const { type } = this
             this.allSelection=arr;
+            if (type === 'local') {
+                this.changePage();
+            }
         },
         getSelect(){
             return this.allSelection;
@@ -417,50 +421,53 @@
             return arr;
         },
         changePage(){  //改变当前页后，操作勾选项问题
+            const { type } = this
             this.currentSelection=[];
             for(let i=0;i<this.tableData.length;i++){
-            for(let j=0;j<this.allSelection.length;j++){
-                if(this.tableData[i][this.selectId]==this.allSelection[j][this.selectId]){
-                this.multipleSelection=false;
-                this.$refs.table.toggleRowSelection(this.tableData[i],true); 
-                this.currentSelection.push(this.tableData[i]);
+                for(let j=0;j<this.allSelection.length;j++){
+                    if(this.tableData[i][this.selectId]==this.allSelection[j][this.selectId]){
+                        this.multipleSelection=false;
+                        this.setRowSelection(this.tableData[i],true);
+                        this.currentSelection.push(this.tableData[i]);
+                    }
                 }
             }
+            if(type==="remote"){
+                this.multipleSelection=true;  //local需要用
             }
-            this.multipleSelection=true;  //local需要用
         },
     },
     mounted() {
-      // event: expand changed to `expand-change` in Element v2.x
-      this.$refs['table'].$on('expand', (row, expanded) => this.emitEventHandler('expand', row, expanded))
-      const { type, autoLoad, data, formOptions, params } = this
-      if (type === 'remote' && autoLoad) {
-        if (formOptions) {
-          this.$refs['searchForm'].getParams((error, formParams) => {
-            if (!error) {
-              this.fetchHandler(Object.assign(formParams, params))
+        // event: expand changed to `expand-change` in Element v2.x
+        this.$refs['table'].$on('expand', (row, expanded) => this.emitEventHandler('expand', row, expanded))
+        const { type, autoLoad, data, formOptions, params } = this
+        if (type === 'remote' && autoLoad) {
+            if (formOptions) {
+                this.$refs['searchForm'].getParams((error, formParams) => {
+                    if (!error) {
+                    this.fetchHandler(Object.assign(formParams, params))
+                    }
+                })
+            } else {
+                this.fetchHandler(params)
             }
-          })
-        } else {
-          this.fetchHandler(params)
+        } else if (type === 'local') {
+            this.loadLocalData(data)
         }
-      } else if (type === 'local') {
-        this.loadLocalData(data)
-      }
     },
     watch: {
-      data: function(value) {
-        this.loadLocalData(value)
-      },
-      resultInfo:function(value){
-        this.$emit('resultData',value); 
-        this.$nextTick(function(){
-          this.changePage()
-        })
-      },
-      webSocketInfo:function(value){
-        this.tableData=this.webSocketInfo;
-      },
+        data: function(value) {
+            this.loadLocalData(value)
+        },
+        resultInfo:function(value){
+            this.$emit('resultData',value); 
+            this.$nextTick(function(){
+                this.changePage()
+            })
+        },
+        webSocketInfo:function(value){
+            this.tableData=this.webSocketInfo;
+        },
     }
 
   }
