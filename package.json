@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/Airubby/el-table-pagination#readme",
   "dependencies": {
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "element-ui": "^2.13.2",
     "vue-router": "^3.4.6"
   },
