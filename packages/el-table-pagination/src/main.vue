@@ -1,8 +1,8 @@
 
 <template>
-  <div style="position:relative" class="search_form_table">
+  <div style="position:relative" class="search-form-table">
 
-    <search-form
+    <el-table-form
       v-if="formOptions"
       ref="searchForm"
       :forms="formOptions.forms"
@@ -36,7 +36,7 @@
       :current-row-key="currentRowKey"
       :row-class-name="rowClassName"
       :row-style="rowStyle"
-      :row-ket="rowKey"
+      :row-key="rowKey"
       :empty-text="emptyText"
       :default-expand-all="defaultExpandAll"
       :expand-row-keys="expandRowKeys"
@@ -113,7 +113,7 @@
         <div class="showSelect" style="font-size:14px;position:absolute;left:10px;top:0;height:32px;line-height:32px;color:#606266;" v-if="showSelectAll&&allSelection.length>0">
             <i class="el-icon-warning"></i>
             <span style="margin:0 15px 0 5px;">已选择<em style="margin:0 2px;color:#409EFF;">{{allSelection.length}}</em>项</span>
-            <a @click="clearSelect" style="cursor:pointer;color:#409EFF;">清空</a>
+            <a @click="clearSelection" style="cursor:pointer;color:#409EFF;">清空</a>
         </div>
         <el-pagination
           @size-change="handleSizeChange"
@@ -146,14 +146,14 @@
         return {
             Vue,
             pagination: {
-            pageIndex: _this.pageIndex,
-            pageSize: (() => {
-                const { pageSizes } = _this
-                if (pageSizes.length > 0) {
-                return _this.pageSize||pageSizes[0]
-                }
-                return _this.pageSize
-            })()
+                pageIndex: _this.pageIndex,
+                pageSize: (() => {
+                    const { pageSizes } = _this
+                    if (pageSizes.length > 0) {
+                        return pageSizes[0]
+                    }
+                    return _this.pageSize
+                })()
             },
             total: 0,
             loading: false,
@@ -161,7 +161,6 @@
             tableData: [],
             cacheLocalData: [],
             resultInfo:{},
-            multipleSelection:true,  //默认是计算勾选的，当切换分页时为false，不计算勾选，只是勾选选项时计算
             allSelection:[],
             currentSelection:[],
         }
@@ -187,7 +186,7 @@
             this.dataChangeHandler()
         },
         searchHandler(resetPageIndex = true) {
-            this.clearSelect();
+            this.clearSelection();
             if (resetPageIndex) {
             this.pagination.pageIndex = 1
             }
@@ -252,10 +251,6 @@
             }
 
             this.$emit('resultData',this.tableData); 
-            this.multipleSelection=false;
-            this.$nextTick(function(){
-                this.changePage()
-            })
         },
         fetchHandler(formParams = {}) {
             this.loading = true
@@ -344,7 +339,6 @@
                 if(this.total>0&&this.tableData.length==0){
                     this.handleCurrentChange(1);
                 }
-
                 this.loading = false
                 }).catch(error => {
                     // console.error('Get remote data failed. ', error)
@@ -354,23 +348,7 @@
         emitEventHandler(event) {
             this.$emit(event, ...Array.from(arguments).slice(1))
             if(arguments[0]=='selection-change'){
-                if(this.multipleSelection){
-                    let val=arguments[1]
-                    let currentArr = [];
-                    if(val.length>this.currentSelection.length){ //增加
-                        this.allSelection=this.allSelection.concat(this.checkItem(val,this.currentSelection))
-                    }else{//减少
-                        currentArr=this.checkItem(this.currentSelection,val);
-                        let list=[];
-                        if(this.allSelection.length>currentArr.length){
-                            this.allSelection=this.checkItem(this.allSelection,currentArr);
-                        }else{
-                            this.allSelection=this.checkItem(currentArr,this.allSelection);
-                        }
-                    }
-                    this.currentSelection = JSON.parse(JSON.stringify(val));
-                }
-                this.multipleSelection=true;
+                this.allSelection=arguments[1];
             }
         },
         loadLocalData(data) {
@@ -384,7 +362,7 @@
             this.cacheLocalData = data
             this.total = data.length
         },
-        clearSelect(){
+        clearSelection(){
             this.$refs.table.clearSelection();
             this.allSelection=[];
             this.currentSelection=[];
@@ -392,8 +370,8 @@
         setSelect(arr){
             const { type } = this
             this.allSelection=arr;
-            if (type === 'local') {
-                this.changePage();
+            for(let i=0;i<arr.length;i++){
+                this.$refs.table.toggleRowSelection(arr[i],true);
             }
         },
         getSelect(){
@@ -420,22 +398,6 @@
             }
             return arr;
         },
-        changePage(){  //改变当前页后，操作勾选项问题
-            const { type } = this
-            this.currentSelection=[];
-            for(let i=0;i<this.tableData.length;i++){
-                for(let j=0;j<this.allSelection.length;j++){
-                    if(this.tableData[i][this.selectId]==this.allSelection[j][this.selectId]){
-                        this.multipleSelection=false;
-                        this.setRowSelection(this.tableData[i],true);
-                        this.currentSelection.push(this.tableData[i]);
-                    }
-                }
-            }
-            if(type==="remote"){
-                this.multipleSelection=true;  //local需要用
-            }
-        },
     },
     mounted() {
         // event: expand changed to `expand-change` in Element v2.x
@@ -461,9 +423,6 @@
         },
         resultInfo:function(value){
             this.$emit('resultData',value); 
-            this.$nextTick(function(){
-                this.changePage()
-            })
         },
         webSocketInfo:function(value){
             this.tableData=this.webSocketInfo;

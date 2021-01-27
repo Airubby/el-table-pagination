@@ -2,7 +2,7 @@
 
 ## 属性
 
-| 参数 | 说明 | 类型 | 可选值 | 默认值 |
+| 参数 | 说明 | 类型 | 可选值 | 默认值 | 说明 |
 | --- |------|:----:|-----|:-----:|
 | fetch | 封装好的获取数据的函数，返回一个promise，会获得搜索条件对象作为参数。若提供该属性，则不会再调用 url属性获取数据 | function | - | - |
 | type | 数据来源类型，包含远程和本地两种| string | remote, local | remote |
@@ -14,15 +14,14 @@
 | headers | 请求头信息 | object | - | - |
 | list-field | 接口返回值对应数据的字段值 | string | - | data.list |
 | total-field | 接口返回值对应数据总数的字段值 | string | - | data.total |
-| params | 搜索参数 | object | - | - |
+| row-key | 显示勾选项的总数及清除勾选项功能时计算数量的判断id | Function(row)/String | - | - | String:为唯一的key比如id；function:return row.id (勾选框需设置:reserve-selection="true")|
 | form-options | form表单设置(见下方[**Form Option 属性**](#form-option-属性)) | object | - | - |
 | data-handler | 数组数据的 map 处理函数 | function | - | - |
 | columns | table column配置对象的数组。具体配置见下面[**Table column 属性**](#table-column-属性) | array | - | - |
 | show-pagination | 是否显示分页组件，如设为false，查询时不传分页参数 | boolean | true, false | true |
 | show-select-all | 是否显示勾选项的总数及清除勾选项功能，如设为true，显示所选项数 | boolean | true, false | false |
-| select-id | 显示勾选项的总数及清除勾选项功能时计算数量的判断id | string | id | id |
 | span-method | 合并行或列的计算方法 | Function({ row, column, rowIndex, columnIndex })	 | - | - |
-| page-sizes | 每页显示个数的控件选项 | array | - | [20, 50, 100] |
+| page-sizes | 每页显示个数的控件选项 | array | - | [10, 20, 50, 100] |
 | pagination-layout | 分页控件的结构，每个类型用逗号分隔 | string | sizes, prev, pager, next, jumper, ->, total, slot | total, prev, pager, next, jumper, sizes |
 | page-index-key | 参数：页码数 的 key 值 | string | - | pageIndex |
 | page-size-key | 参数：每页展示个数 的 key 值 | string | - | pageSize |
@@ -39,6 +38,8 @@
 | label | 列名 | string | - | - |
 | width| 列宽 | number | - | 140 |
 | minWidth | 最小列宽 | number | - | - |
+| fixed | 列固定 | string | right|left | - |
+| sortable | 列筛选排序 | Boolean | true|false | false |
 | filter | 过滤器名（只有配置在全局的filter才有效） | string | - | - |
 | render | 处理数据的函数，接收行数据作为参数 | function | - | - |
 | slotName | 使用 slot 标记的代码块的 slot 属性值 | string | - | - |
@@ -96,10 +97,10 @@ submitHandler | 查询按钮的click处理函数，接收form表单对象数据�
 | 方法名 | 说明 | 参数 |
 | ----- |-----|-----|
 | searchHandler | true重置分页页码参数为1，重新搜索数据 | ture/false |
-| setSelect | 设置table初始化需要勾选的项object给个id即可 | array[object] |
+| setSelect | 设置table初始化需要勾选的项object给个id即可，异步的需放在$nextTick中设置 | array[object] |
 | getSelect | 获取table勾选的项 | array[object] |
 | setRowSelection | 设置table某一行的选中状态(row, true/false) | row, selected |
-| clearSelect | 清空table的勾选项 |  |
+| clearSelection | 清空table的勾选项 |  |
 
 ## Slots
 

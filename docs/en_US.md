@@ -9,19 +9,19 @@
 | data | Data list, only avaliable when type is 'local' | array | - | - |
 | url | Request URL | string | - | - |
 | method| Request method | string | get, post, delete, put | get |
+| params | Search params when send request to backend | object | - | - |
 | auto-load | Whether request remote data and show when component be created | boolean | true, false | true |
 | headers | Request headers | object | - | - |
 | list-field | The key to get list data from response | string | - | data.list |
 | total-field | The key to get total count of response | string | - | data.total |
-| params | Search params when send request to backend | object | - | - |
+| row-key | Displays the total number of tick boxes and the judgment id for calculating the number of tick boxes | Function(row)/String | - | - |
 | form-options | form item settings(See [**Form Option Attributes**](#form-option-attributes) below) | object | - | - |
 | data-handler | Function as parameter of Array.map to hander list data | function | - | - |
 | columns | Array of table column settings object. See [**Table column Attributes**](#table-column-attribute) below | array | - | - |
 | show-pagination | Whether to show pagination component, if it's false, request parameters will not contain pagination parameters(pageIndex, pageSize) | boolean | - | true |
 | show-select-all | Whether to display the total number of tick boxes and clear tick boxes | boolean | true, false | false |
-| select-id | Displays the total number of tick boxes and the judgment id for calculating the number of tick boxes | string | id | id |
 | span-method | method that returns rowspan and colspan | Function({ row, column, rowIndex, columnIndex })	 | - | - |
-| page-sizes | Options of item count per page | array | - | [20, 50, 100] |
+| page-sizes | Options of item count per page | array | - | [10, 20, 50, 100] |
 | pagination-layout | Layout of pagination, elements  separated with a comma | string | sizes, prev, pager, next, jumper, ->, total, slot | total, prev, pager, next, jumper, sizes |
 | page-index-key | The key of pagination parameter of page index | string | - | pageIndex |
 | page-size-key | The key of pagination parameter of page size | string | - | pageSize |
@@ -38,6 +38,8 @@ Supported attributes of `Element UI Table`: stripe / border / height / max-heigh
 | label | column show value | string | - | - |
 | width| column width | number | - | 140 |
 | minWidth | min column width | number | - | - |
+| fixed | fixed | string | right|left | - |
+| sortable | sort | Boolean | true|false | false |
 | filter | filter name, only avaliable for registed on global Vue | string | - | - |
 | render | function to handle data, and show the return value. The function will have the element of list data as parameter | function | - | - |
 | slotName | use slot to wrap a code block to build column content | string | - | - |
@@ -98,7 +100,7 @@ submitHandler | function to hander click event of submit button, the will receiv
 | setSelect | Set the table initialization to check the item object to give an id | array[object] |
 | getSelect | Get the items checked on the table | array[object] |
 | setRowSelection | Set the selected state of a row of table (row, true/false) | row, selected |
-| clearSelect | Clear the table check | - |
+| clearSelection | Clear the table check | - |
 
 ## Slots
 
