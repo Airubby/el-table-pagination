@@ -419,7 +419,10 @@
     },
     watch: {
         data: function(value) {
-            this.loadLocalData(value)
+            const { type } = this
+            if(type==='local'){
+                this.loadLocalData(value)
+            }
         },
         resultInfo:function(value){
             this.$emit('resultData',value); 
